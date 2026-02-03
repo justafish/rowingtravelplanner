@@ -5,28 +5,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rowing Travel Planner</title>
     <style>
-        :root { --primary: #2563eb; --bg: #f8fafc; }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; display: flex; height: 100vh; }
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+        }
+
+        body {
+            font-family: sans-serif;
+            background: var(--bg);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+        }
 
         /* Layout */
-        .panel { flex: 1; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; }
-        .left-side { border-right: 2px solid #e2e8f0; background: white; }
-        .right-side { background: var(--bg); }
+        .panel {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .left-side {
+            border-right: 2px solid #e2e8f0;
+            background: white;
+        }
+
+        .right-side {
+            background: var(--bg);
+        }
 
         /* Form Styling */
-        h2 { margin-top: 0; color: #1e293b; }
-        .input-group { margin-bottom: 20px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; color: #64748b; }
-        input, textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; box-sizing: border-box; }
+        h2 {
+            margin-top: 0;
+            color: #1e293b;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
 
         /* Output Styling */
-        #output { background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px;
-            white-space: pre-wrap; min-height: 200px; font-size: 1.1rem; line-height: 1.5; color: #334155; }
+        #output {
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 20px;
+            white-space: pre-wrap;
+            min-height: 200px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: #334155;
+        }
 
-        button { background: var(--primary); color: white; border: none; padding: 12px 20px;
-            border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 15px; transition: 0.2s; }
-        button:hover { background: #1d4ed8; }
-        button:active { transform: translateY(1px); }
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
     </style>
 </head>
 <body>
@@ -69,15 +137,20 @@ Telemetry screens" oninput="updateMessage()"></textarea>
     </div>
     <div class="input-group">
         <label>Session plans</label>
-        <textarea id="sessionplans" rows="4" placeholder="e.g. 1st session boating 08:00 2 loops technical paddle, 2nd session 3 x 1250m r24" oninput="updateMessage()"></textarea>
+        <textarea id="sessionplans" rows="4"
+                  placeholder="e.g. 1st session boating 08:00 2 loops technical paddle, 2nd session 3 x 1250m r24"
+                  oninput="updateMessage()"></textarea>
     </div>
     <div class="input-group">
         <label>Other information</label>
-        <textarea id="other" rows="4" placeholder="e.g. Bring food, there is none to buy at Dorney" oninput="updateMessage()"></textarea>
+        <textarea id="other" rows="4" placeholder="e.g. Bring food, there is none to buy at Dorney"
+                  oninput="updateMessage()"></textarea>
     </div>
     <div class="input-group">
         <label>What should people not attending do back at KRC?</label>
-        <textarea id="backhome" rows="4" placeholder="e.g. get on the erg if possible. Try to do 4 sessions to include 2 60m UT2, 1 UT1 and 1 3x 1250m piece with 7 minutes rest r30" oninput="updateMessage()"></textarea>
+        <textarea id="backhome" rows="4"
+                  placeholder="e.g. get on the erg if possible. Try to do 4 sessions to include 2 60m UT2, 1 UT1 and 1 3x 1250m piece with 7 minutes rest r30"
+                  oninput="updateMessage()"></textarea>
     </div>
 </div>
 
@@ -86,39 +159,48 @@ Telemetry screens" oninput="updateMessage()"></textarea>
     <div id="output">Hi there! Fill out the form to see your message...</div>
     <button onclick="copyText()">Copy to Clipboard</button>
 </div>
-
 <script>
+    const fieldIds = [
+        'where', 'when', 'meettime', 'map',
+        'personnel', 'equipment', 'sessionplans',
+        'other', 'backhome'
+    ];
+
     function updateMessage() {
-        const where = document.getElementById('where').value || "[Where]";
-        const when = document.getElementById('when').value || "[When]";
-        const meettime = document.getElementById('meettime').value || "[Meet time]";
-        const map = document.getElementById('map').value || "";
-        const personnel = document.getElementById('personnel').value || "[Personnel]"
-        const equipment = document.getElementById('equipment').value || "";
-        const sessionplans = document.getElementById('sessionplans').value || "";
-        const other = document.getElementById('other').value || "";
-        const backhome = document.getElementById('backhome').value || "";
+        const values = {};
 
-        // CUSTOMIZE YOUR TEMPLATE HERE
-        let template = `${where} ${when}
-Meet by the trailer at ${meettime} ${map}
+        fieldIds.forEach(id => {
+            const val = document.getElementById(id).value;
+            values[id] = val;
+            // Save to local storage as user types
+            localStorage.setItem('rowing_' + id, val);
+        });
 
-${personnel}
-`;
-        if (equipment.length) {
-            template += `\nWe will need ${equipment}\n`;
+        // Set defaults for the display
+        const display = {};
+        fieldIds.forEach(id => {
+            display[id] = values[id] || `[${id}]`;
+        });
+
+        // Build the Template
+        let template = `${display.where} ${display.when}\n`;
+        template += `Meet by the trailer at ${display.meettime} ${values.map}\n\n`;
+        template += `${display.personnel}\n`;
+
+        if (values.equipment) {
+            template += `\nWe will need ${values.equipment}\n`;
         }
 
-        if (sessionplans.length) {
-            template += `\n${sessionplans}\n`;
+        if (values.sessionplans) {
+            template += `\n${values.sessionplans}\n`;
         }
 
-        if (other.length) {
-            template += `\n${other}\n`;
+        if (values.other) {
+            template += `\n${values.other}\n`;
         }
 
-        if (backhome.length) {
-            template += `\nThose back at KRC should ${backhome}\n`;
+        if (values.backhome) {
+            template += `\nThose back at KRC should ${values.backhome}\n`;
         }
 
         document.getElementById('output').innerText = template;
@@ -133,7 +215,16 @@ ${personnel}
         });
     }
 
-    window.onload = updateMessage;
+    // Load data on startup
+    window.onload = function () {
+        fieldIds.forEach(id => {
+            const savedValue = localStorage.getItem('rowing_' + id);
+            if (savedValue !== null) {
+                document.getElementById(id).value = savedValue;
+            }
+        });
+        updateMessage();
+    };
 </script>
 </body>
 </html>
