@@ -63,6 +63,11 @@
             box-sizing: border-box;
         }
 
+        textarea {
+            overflow-y: hidden;
+            resize: none; /* Auto-resize works best when manual resize is off */
+        }
+
         /* Output Styling */
         #output {
             background: white;
@@ -118,7 +123,7 @@
     </div>
     <div class="input-group">
         <label>Personnel required inc line-ups and equipment if known</label>
-        <textarea rows="10" id="personnel" placeholder="e.g.
+        <textarea rows="18" id="personnel" placeholder="e.g.
 1st Session:
 Sweet Caroline 4x- (WJ18 comp sculls)
 Sally (steer), Olly, Patrick, Andy
@@ -130,25 +135,26 @@ Patrick (steer), Olly, Andy, Sally
     </div>
     <div class="input-group">
         <label>What equipment are we taking (if not listed above)</label>
-        <textarea type="textarea" rows="4" id="equipment" placeholder="e.g. Chris G
+        <textarea type="textarea" rows="10" id="equipment" placeholder="e.g. Chris G
 Sweet Caroline (sculling + sweep riggers)
 4 x WJ18 comp sculls
 Telemetry screens" oninput="updateMessage()"></textarea>
     </div>
     <div class="input-group">
         <label>Session plans</label>
-        <textarea id="sessionplans" rows="4"
-                  placeholder="e.g. 1st session boating 08:00 2 loops technical paddle, 2nd session 3 x 1250m r24"
+        <textarea id="sessionplans" rows="10"
+                  placeholder="e.g. 1st session boating 08:00 2 loops technical paddle
+2nd session 3 x 1250m r24"
                   oninput="updateMessage()"></textarea>
     </div>
     <div class="input-group">
         <label>Other information</label>
-        <textarea id="other" rows="4" placeholder="e.g. Bring food, there is none to buy at Dorney"
+        <textarea id="other" rows="5" placeholder="e.g. Bring food, there is none to buy at Dorney"
                   oninput="updateMessage()"></textarea>
     </div>
     <div class="input-group">
         <label>What should people not attending do back at KRC?</label>
-        <textarea id="backhome" rows="4"
+        <textarea id="backhome" rows="12"
                   placeholder="e.g. get on the erg if possible. Try to do 4 sessions to include 2 60m UT2, 1 UT1 and 1 3x 1250m piece with 7 minutes rest r30"
                   oninput="updateMessage()"></textarea>
     </div>
@@ -166,7 +172,18 @@ Telemetry screens" oninput="updateMessage()"></textarea>
         'other', 'backhome'
     ];
 
+    function autoResize() {
+        fieldIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el.tagName === 'TEXTAREA') {
+                el.style.height = 'auto'; // Reset height
+                el.style.height = el.scrollHeight + 'px'; // Set to scroll height
+            }
+        });
+    }
+
     function updateMessage() {
+        autoResize();
         const values = {};
 
         fieldIds.forEach(id => {
