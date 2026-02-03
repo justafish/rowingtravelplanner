@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Generator</title>
+    <style>
+        :root { --primary: #2563eb; --bg: #f8fafc; }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; display: flex; height: 100vh; }
+
+        /* Layout */
+        .panel { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; }
+        .left-side { border-right: 2px solid #e2e8f0; background: white; }
+        .right-side { background: var(--bg); }
+
+        /* Form Styling */
+        h2 { margin-top: 0; color: #1e293b; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; color: #64748b; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; box-sizing: border-box; }
+
+        /* Output Styling */
+        #output { background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px;
+            white-space: pre-wrap; min-height: 200px; font-size: 1.1rem; line-height: 1.5; color: #334155; }
+
+        button { background: var(--primary); color: white; border: none; padding: 12px 20px;
+            border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 15px; transition: 0.2s; }
+        button:hover { background: #1d4ed8; }
+        button:active { transform: translateY(1px); }
+    </style>
+</head>
+<body>
+
+<div class="panel left-side">
+    <div class="input-group">
+        <label>Where are we going</label>
+        <input type="text" id="where" placeholder="e.g. Dorney" oninput="updateMessage()">
+    </div>
+    <div class="input-group">
+        <label>When are we going</label>
+        <input type="text" id="when" placeholder="e.g. this Saturday" oninput="updateMessage()">
+    </div>
+    <div class="input-group">
+        <label>When to meet at the trailer</label>
+        <input type="text" id="meettime" placeholder="e.g. 07:30" oninput="updateMessage()">
+    </div>
+    <div class="input-group">
+        <label>Google maps link to where the trailer will be</label>
+        <input type="text" id="map" oninput="updateMessage()">
+    </div>
+    <div class="input-group">
+        <label>Personnel required - line-ups and equipment if known</label>
+        <textarea rows="10" id="personnel" placeholder="e.g.
+1st Session:
+Sweet Caroline 4x- (WJ18 comp sculls)
+Sally (steer), Olly, Patrick, Andy
+
+2nd Session:
+CNM 4- (bowside stroke with a bucket at 2/3)
+Patrick (steer), Olly, Andy, Sally
+" oninput="updateMessage()"></textarea>
+    </div>
+    <div class="input-group">
+        <label>What equipment are we taking (if not listed above)?</label>
+        <textarea type="textarea" rows="4" id="equipment" placeholder="e.g. Chris G
+Sweet Caroline (sculling + sweep riggers)
+4 x WJ18 comp sculls
+Telemetry screens" oninput="updateMessage()"></textarea>
+    </div>
+    <div class="input-group">
+        <label>Session plans</label>
+        <textarea id="sessionplans" rows="4" placeholder="e.g. 2 loops technical paddle 1st session, 3 x 1250 2nd session" oninput="updateMessage()"></textarea>
+    </div>
+    <div class="input-group">
+        <label>Other information</label>
+        <textarea id="other" rows="4" placeholder="e.g. Bring food, there is none to buy at Dorney" oninput="updateMessage()"></textarea>
+    </div>
+    <div class="input-group">
+        <label>What should people not attending do back at KRC?</label>
+        <textarea id="backhome" rows="4" placeholder="e.g. get on the erg if possible. Try to do 4 sessions to include 2 60m UT2, 1 UT1 and 1 3x 1250m piece with 7 minutes rest r30" oninput="updateMessage()"></textarea>
+    </div>
+</div>
+
+<div class="panel right-side">
+    <h2>Preview</h2>
+    <div id="output">Hi there! Fill out the form to see your message...</div>
+    <button onclick="copyText()">Copy to Clipboard</button>
+</div>
+
+<script>
+    function updateMessage() {
+        const where = document.getElementById('where').value || "[Where]";
+        const when = document.getElementById('when').value || "[When]";
+        const meettime = document.getElementById('meettime').value || "[Meet time]";
+        const map = document.getElementById('map').value || "";
+        const personnel = document.getElementById('personnel').value || "[Personnel]"
+        const equipment = document.getElementById('equipment').value || "";
+        const sessionplans = document.getElementById('sessionplans').value || "";
+        const other = document.getElementById('other').value || "";
+        const backhome = document.getElementById('backhome').value || "";
+
+        // CUSTOMIZE YOUR TEMPLATE HERE
+        let template = `${where} ${when}
+Meet by the trailer at ${meettime} ${map}
+
+${personnel}
+`;
+        if (equipment.length) {
+            template += `\nWe will need ${equipment}\n`;
+        }
+
+        if (sessionplans.length) {
+            template += `\n${sessionplans}\n`;
+        }
+
+        if (other.length) {
+            template += `\n${other}\n`;
+        }
+
+        if (backhome.length) {
+            template += `\nThose back at KRC should ${backhome}\n`;
+        }
+
+        document.getElementById('output').innerText = template;
+    }
+
+    function copyText() {
+        const text = document.getElementById('output').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = document.querySelector('button');
+            btn.innerText = "Copied!";
+            setTimeout(() => btn.innerText = "Copy to Clipboard", 2000);
+        });
+    }
+</script>
+</body>
+</html>
